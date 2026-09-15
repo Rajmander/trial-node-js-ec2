@@ -1,4 +1,4 @@
-name: Deploy Node.js API
+name: Deploy Node API
 
 on:
   push:
@@ -10,6 +10,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t 270478412235.dkr.ecr.ap-south-1.amazonaws.com/my-node-api:${{ github.sha }} .
+
+      - name: Push Docker image to ECR
+        run: |
+          docker push \
+            270478412235.dkr.ecr.ap-south-1.amazonaws.com/my-node-api:${{ github.sha }}
+
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1
         with:
@@ -17,8 +41,20 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ubuntu/trial-node-js-ec2
-            git pull origin main
-            npm install
-            pm2 restart my-api
-            pm2 save
+            aws ecr get-login-password --region ap-south-1 | \
+            docker login --username AWS --password-stdin \
+            270478412235.dkr.ecr.ap-south-1.amazonaws.com
+
+            docker pull \
+            270478412235.dkr.ecr.ap-south-1.amazonaws.com/my-node-api:${{ github.sha }}
+
+            docker stop my-api || true
+            docker rm my-api || true
+
+            docker run -d \
+              --name my-api \
+              --restart unless-stopped \
+              -p 9000:9000 \
+              270478412235.dkr.ecr.ap-south-1.amazonaws.com/my-node-api:${{ github.sha }}
+
+            docker image prune -f

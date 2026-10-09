@@ -26,4 +26,3 @@ steps:
         whoami
         hostname
         docker --version
-```

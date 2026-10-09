@@ -12,7 +12,7 @@ app.get("/", async (req, res, next) => {
   try {
     //const users = await user.find();
     //console.log("done", users);
-    return res.json({ msg: "4444522222its done 123 bro" });
+    return res.json({ msg: "4444522222its do111ne 123 bro" });
   } catch (Error) {
     console.log(Error);
   }

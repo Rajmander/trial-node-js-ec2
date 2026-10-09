@@ -1,11 +1,29 @@
-- name: Test EC2 SSH
-  uses: appleboy/ssh-action@v1
-  with:
-    host: ${{ secrets.EC2_HOST }}
-    username: ${{ secrets.EC2_USERNAME }}
-    key: ${{ secrets.EC2_SSH_KEY }}
-    port: 22
-    script: |
-      whoami
-      hostname
-      docker --version
+name: Deploy Node.js API to EC2
+
+on:
+push:
+branches:
+- main
+workflow_dispatch:
+
+jobs:
+deploy:
+runs-on: ubuntu-latest
+
+
+steps:
+  - name: Checkout code
+    uses: actions/checkout@v4
+
+  - name: Test EC2 SSH
+    uses: appleboy/ssh-action@v1
+    with:
+      host: ${{ secrets.EC2_HOST }}
+      username: ${{ secrets.EC2_USERNAME }}
+      key: ${{ secrets.EC2_SSH_KEY }}
+      port: 22
+      script: |
+        whoami
+        hostname
+        docker --version
+```

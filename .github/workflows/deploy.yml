@@ -1,4 +1,4 @@
-name: Deploy Node.js API to EC2
+name: Deploy Node.js API
 
 on:
 push:
@@ -10,9 +10,8 @@ jobs:
 deploy:
 runs-on: ubuntu-latest
 
-
 steps:
-  - name: Checkout code
+  - name: Checkout repository
     uses: actions/checkout@v4
 
   - name: Test EC2 SSH
@@ -26,3 +25,8 @@ steps:
         whoami
         hostname
         docker --version
+
+
+
+
+

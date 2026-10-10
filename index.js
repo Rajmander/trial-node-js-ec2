@@ -10,15 +10,13 @@ connectDb();
 import user from "./user.model.js";
 app.get("/", async (req, res, next) => {
   try {
-    //const users = await user.find();
-    //console.log("done", users);
-    return res.json({ msg: "ooo  45 do111kkkn55777e 78123 bro" });
+    return res.json({ msg: "123" });
   } catch (Error) {
     console.log(Error);
+    return res.json({
+      msg: "5633",
+    });
   }
-  //   return res.json({
-  //     msg: "i am done with github actions temp hi rajmander",
-  //   });
 });
 
 app.get("/welcome", (req, res, next) => {

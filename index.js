@@ -24,7 +24,7 @@ app.get("/welcome", (req, res, next) => {
 });
 
 app.post("/mypost", (req, res, next) => {
-  return res.json({ msg: "i m fine" });
+  return res.json({ msg: "i m fine 2222" });
 });
 
 app.delete("/mydelete", (req, res, next) => {
